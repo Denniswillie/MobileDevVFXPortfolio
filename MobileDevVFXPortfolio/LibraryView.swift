@@ -18,10 +18,11 @@ struct LibraryView: View {
     
     // Body animation
     @State private var readyRenderBody = false
-    
     @State private var firstDisplay = true
-    
     @State private var displayDetailedScreen = false
+    
+    // Contents options
+    @State private var chosenId = 1
     
     var body: some View {
         VStack {
@@ -45,7 +46,7 @@ struct LibraryView: View {
                 HStack {
                     VStack {
                         Divider()
-                            .frame(height: 1)
+                            .frame(height: 2)
                             .overlay(Color("almost_grey"))
                         
                         Text("\n")
@@ -55,36 +56,58 @@ struct LibraryView: View {
                     VStack {
                         Divider()
                             .frame(height: 2)
-                            .overlay(.black)
+                            .overlay(chosenId == 1 ? .black : Color("almost_grey"))
                         
-                        Text("Death\nStar")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.black)
-                            .bold()
+                        Button(action: {
+                            chosenId = 1
+                        }) {
+                            Text("Death\nStar")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(chosenId == 1 ? .black : .gray)
+                                .bold()
+                        }
                     }
                     VStack {
                         Divider()
                             .frame(height: 2)
-                        Text("Doctor\nStrange")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.gray)
-                            .bold()
+                            .overlay(chosenId == 2 ? .black : Color("almost_grey"))
+                        
+                        Button (action: {
+                            chosenId = 2
+                        }) {
+                            Text("Doctor\nStrange")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(chosenId == 2 ? .black : .gray)
+                                .bold()
+                        }
                     }
                     VStack {
                         Divider()
                             .frame(height: 2)
-                        Text("Death\nstar")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.gray)
-                            .bold()
+                            .overlay(chosenId == 3 ? .black : Color("almost_grey"))
+                        
+                        Button (action: {
+                            chosenId = 3
+                        }) {
+                            Text("Death\nstar")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(chosenId == 3 ? .black : .gray)
+                                .bold()
+                        }
                     }
                     VStack {
                         Divider()
                             .frame(height: 2)
-                        Text("Death\nstar")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.gray)
-                            .bold()
+                            .overlay(chosenId == 4 ? .black : Color("almost_grey"))
+                        
+                        Button (action: {
+                            chosenId = 4
+                        }) {
+                            Text("Death\nstar")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(chosenId == 4 ? .black : .gray)
+                                .bold()
+                        }
                     }
                 }
             }
@@ -95,10 +118,11 @@ struct LibraryView: View {
         
             VStack {
                 Text("Death star")
+                    .bold()
                     .font(.title3)
                     .padding(.top, nil)
                     .padding(.leading, nil)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 ZStack {
@@ -128,16 +152,16 @@ struct LibraryView: View {
                 }
                 HStack {
                     Text("Lorem ipsum is cool.")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     Spacer()
                     Image(systemName: "hand.thumbsup")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 }
                 .padding()
             }
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: [Color("theme_color_1_2"), Color("theme_color_1_3"), Color("theme_color_1_4")]),
+                    gradient: Gradient(colors: [.white, Color("theme_color_1_6"), .white]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
