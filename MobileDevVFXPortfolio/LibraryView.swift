@@ -24,6 +24,9 @@ struct LibraryView: View {
     // Contents options
     @State private var chosenId = 1
     
+    // Controller
+    @StateObject private var vfxViewController = VFXViewController()
+    
     var body: some View {
         VStack {
             Text("Projects Collection")
@@ -53,60 +56,20 @@ struct LibraryView: View {
                     }
                 }
                 HStack {
-                    VStack {
-                        Divider()
-                            .frame(height: 2)
-                            .overlay(chosenId == 1 ? .black : Color("almost_grey"))
-                        
-                        Button(action: {
-                            chosenId = 1
-                        }) {
-                            Text("Death\nStar")
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(chosenId == 1 ? .black : .gray)
-                                .bold()
-                        }
-                    }
-                    VStack {
-                        Divider()
-                            .frame(height: 2)
-                            .overlay(chosenId == 2 ? .black : Color("almost_grey"))
-                        
-                        Button (action: {
-                            chosenId = 2
-                        }) {
-                            Text("Doctor\nStrange")
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(chosenId == 2 ? .black : .gray)
-                                .bold()
-                        }
-                    }
-                    VStack {
-                        Divider()
-                            .frame(height: 2)
-                            .overlay(chosenId == 3 ? .black : Color("almost_grey"))
-                        
-                        Button (action: {
-                            chosenId = 3
-                        }) {
-                            Text("Death\nstar")
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(chosenId == 3 ? .black : .gray)
-                                .bold()
-                        }
-                    }
-                    VStack {
-                        Divider()
-                            .frame(height: 2)
-                            .overlay(chosenId == 4 ? .black : Color("almost_grey"))
-                        
-                        Button (action: {
-                            chosenId = 4
-                        }) {
-                            Text("Death\nstar")
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(chosenId == 4 ? .black : .gray)
-                                .bold()
+                    ForEach(vfxViewController.projects) { project in
+                        VStack {
+                            Divider()
+                                .frame(height: 2)
+                                .overlay(chosenId == project.id ? .black : Color("almost_grey"))
+                            
+                            Button(action: {
+                                chosenId = project.id
+                            }) {
+                                Text(project.title)
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(chosenId == project.id ? .black : .gray)
+                                    .bold()
+                            }
                         }
                     }
                 }
@@ -117,51 +80,60 @@ struct LibraryView: View {
             Spacer()
         
             VStack {
-                Text("Death star")
+                Text(vfxViewController.projects[chosenId - 1].title)
                     .bold()
                     .font(.title3)
                     .padding(.top, nil)
                     .padding(.leading, nil)
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 ZStack {
                     Button(action: {
                         displayDetailedScreen = true
                     }) {
-                        Image("space")
+                        Image(vfxViewController.projects[chosenId - 1].imageName)
                             .resizable()
                             .frame(height: 210)
                     }
                     .fullScreenCover(isPresented: $displayDetailedScreen) {
-                        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen)
+                        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen, project: vfxViewController.projects[chosenId - 1])
                     }
                     
-                    Image(systemName: "play.circle.fill")
-                        .resizable()
-                        .foregroundColor(Color("almost_grey"))
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: [Color("theme_color_1_1"), Color("theme_color_1_2"), Color("theme_color_1_3"), Color("theme_color_1_4")]),
-                                startPoint: .bottomLeading,
-                                endPoint: .topTrailing
+                    Button(action: {
+                        displayDetailedScreen = true
+                    }) {
+                        Image(systemName: "play.circle.fill")
+                            .resizable()
+                            .foregroundColor(Color("almost_grey"))
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color("theme_color_1_1"), Color("theme_color_1_2"), Color("theme_color_1_3"), Color("theme_color_1_4")]),
+                                    startPoint: .bottomLeading,
+                                    endPoint: .topTrailing
+                                )
                             )
-                        )
-                        .cornerRadius(20)
-                        .frame(width: 40, height: 40)
+                            .cornerRadius(20)
+                            .frame(width: 40, height: 40)
+                    }
                 }
                 HStack {
-                    Text("Lorem ipsum is cool.")
-                        .foregroundColor(.black)
+                    Text(vfxViewController.projects[chosenId - 1].descriptionHeading)
+                        .foregroundColor(.white)
+                        .bold()
                     Spacer()
-                    Image(systemName: "hand.thumbsup")
-                        .foregroundColor(.black)
+                    Button(action: {
+                        vfxViewController.toggleLike(id: chosenId)
+                    }) {
+                        Image(systemName: vfxViewController.projects[chosenId - 1].liked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                            .foregroundColor(.black)
+                    }
                 }
                 .padding()
             }
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: [.white, Color("theme_color_1_6"), .white]),
+                    gradient: Gradient(colors: [Color("theme_color_1_2"),Color("theme_color_1_3"), Color("theme_color_1_4"), Color("theme_color_1_6"), .white]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
