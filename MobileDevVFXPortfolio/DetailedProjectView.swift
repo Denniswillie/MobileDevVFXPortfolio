@@ -24,8 +24,11 @@ struct DetailedProjectView: View {
     // First time display
     @State private var firstDisplay = true
     
+    @State private var brightnessLevel = 0.0
+    
     @Binding public var displayDetailedScreen: Bool
     public var project: VFXProject
+    @StateObject public var vfxViewController: VFXViewController
     
     let buttonColor = Color(#colorLiteral(red: 0.4431372549, green: 0.25098039215, blue: 0.78823529411, alpha: 1))
     let cursorColor = Color(.white)
@@ -41,6 +44,7 @@ struct DetailedProjectView: View {
 //                .aspectRatio(400 / 300, contentMode: .fit)
                 .frame(height: 250,
                        alignment: .center)
+                .brightness(brightnessLevel)
                 .onAppear{
                     let item = AVPlayerItem(url: project.videoUrl)
                     player.replaceCurrentItem(with: item)
@@ -61,9 +65,13 @@ struct DetailedProjectView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
-                Image(systemName: "hand.thumbsup")
-                    .foregroundColor(.white)
-                    .padding(.trailing, nil)
+                Button(action: {
+                    vfxViewController.toggleLike(id: project.id)
+                }) {
+                    Image(systemName: vfxViewController.projects[project.id - 1].liked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                        .foregroundColor(.white)
+                        .padding(.trailing, nil)
+                }
             }
             .padding()
             
@@ -72,6 +80,19 @@ struct DetailedProjectView: View {
                 .padding(.leading, nil)
                 .padding(.trailing, nil)
                 .foregroundColor(.white)
+            
+            Text("Adjust Brightness")
+                .font(.title3)
+                .bold()
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, nil)
+                .padding(.top, nil)
+            
+            Slider(value: $brightnessLevel, in: 0...1)
+                .padding(.leading, nil)
+                .padding(.trailing, nil)
+                .tint(.green)
         }
         .frame(
             minWidth: 0,
@@ -100,8 +121,10 @@ struct DetailedProjectView: View {
     }
 }
 
-//struct DetailedProjectView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        DetailedProjectView()
-//    }
-//}
+struct DetailedProjectView_Previews: PreviewProvider {
+    @State static var displayDetailedScreen = true
+    static var vfxViewController = VFXViewController()
+    static var previews: some View {
+        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen, project: vfxViewController.projects[0], vfxViewController: vfxViewController)
+    }
+}

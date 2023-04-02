@@ -28,6 +28,9 @@ struct ContentView: View {
     
     let textColor = Color(.gray)
     
+    // Controller
+    @StateObject private var vfxViewController = VFXViewController()
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Mobile Development CA 1")
@@ -96,7 +99,7 @@ struct ContentView: View {
                     .padding(.trailing, nil)
                     .tint(.white)
                 Spacer().frame(height: 20)
-                NavigationLink(destination: LibraryView()) {
+                NavigationLink(destination: LibraryView(vfxViewController: vfxViewController)) {
                     HStack {
                         Text("EXPLORE")
                             .fontWeight(.bold)

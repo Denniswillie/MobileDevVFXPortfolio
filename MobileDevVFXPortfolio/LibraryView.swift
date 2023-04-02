@@ -21,11 +21,10 @@ struct LibraryView: View {
     @State private var firstDisplay = true
     @State private var displayDetailedScreen = false
     
+    @StateObject public var vfxViewController: VFXViewController
+    
     // Contents options
     @State private var chosenId = 1
-    
-    // Controller
-    @StateObject private var vfxViewController = VFXViewController()
     
     var body: some View {
         VStack {
@@ -85,7 +84,7 @@ struct LibraryView: View {
                     .font(.title3)
                     .padding(.top, nil)
                     .padding(.leading, nil)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 ZStack {
@@ -97,7 +96,7 @@ struct LibraryView: View {
                             .frame(height: 210)
                     }
                     .fullScreenCover(isPresented: $displayDetailedScreen) {
-                        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen, project: vfxViewController.projects[chosenId - 1])
+                        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen, project: vfxViewController.projects[chosenId - 1], vfxViewController: vfxViewController)
                     }
                     
                     Button(action: {
@@ -119,7 +118,7 @@ struct LibraryView: View {
                 }
                 HStack {
                     Text(vfxViewController.projects[chosenId - 1].descriptionHeading)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .bold()
                     Spacer()
                     Button(action: {
@@ -131,17 +130,17 @@ struct LibraryView: View {
                 }
                 .padding()
             }
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [Color("theme_color_1_2"),Color("theme_color_1_3"), Color("theme_color_1_4"), Color("theme_color_1_6"), .white]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+//            .background(
+//                LinearGradient(
+//                    gradient: Gradient(colors: [Color("theme_color_1_2"),Color("theme_color_1_3"), Color("theme_color_1_4"), Color("theme_color_1_6")]),
+//                    startPoint: .topLeading,
+//                    endPoint: .bottomTrailing
+//                )
+//            )
             .cornerRadius(20)
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color("almost_grey"), lineWidth: 2)
+                    .stroke(.gray, lineWidth: 1)
             )
             
             Spacer()
@@ -165,7 +164,8 @@ struct LibraryView: View {
 }
 
 struct LibraryView_Previews: PreviewProvider {
+    static var vfxViewController = VFXViewController()
     static var previews: some View {
-        LibraryView()
+        LibraryView(vfxViewController: vfxViewController)
     }
 }
