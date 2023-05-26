@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie on 29/03/2023.
+//  Created by Dennis Willie and Jeremy Neo
 //
 
 import SwiftUI
@@ -21,7 +21,7 @@ struct ContentView: View {
     @State private var displayExploreButton = false
     
     // First time display
-    @State private var firstDisplay = true
+    @State public var firstDisplay = true
     
     let buttonColor = Color(#colorLiteral(red: 0.4431372549, green: 0.25098039215, blue: 0.78823529411, alpha: 1))
     let cursorColor = Color(.white)
@@ -33,7 +33,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Mobile Development CA 1")
+            Text("Mobile Development CA 2")
                 .font(.title3)
                 .foregroundColor(.white)
                 .padding()
@@ -41,17 +41,26 @@ struct ContentView: View {
             Spacer().frame(height: 50)
             
             ZStack(alignment: .leading) {
-                Text("VFX Portfolio")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(.white)
-                    .mask(Rectangle().offset(x: titleWriting ? 0 : -250))
+                if (firstDisplay) {
+                    Text("VFX Portfolio")
+                        .font(.largeTitle)
+                        .bold()
+                        .foregroundColor(.white)
+                        .mask(Rectangle().offset(x: titleWriting ? 0 : -250))
+                } else {
+                    Text("VFX Portfolio")
+                        .font(.largeTitle)
+                        .bold()
+                        .foregroundColor(.white)
+                }
                 
-                Rectangle()
-                    .fill(cursorColor)
-                    .opacity(titleBlinkingCursor ? 1 : 0)
-                    .frame(width: 3, height: 35)
-                    .offset(x: titleMovingCursor ? 210 : 0)
+                if firstDisplay {
+                    Rectangle()
+                        .fill(cursorColor)
+                        .opacity(titleBlinkingCursor ? 1 : 0)
+                        .frame(width: 3, height: 35)
+                        .offset(x: titleMovingCursor ? 210 : 0)
+                }
             }
             .onAppear {
                 if firstDisplay {
@@ -74,11 +83,11 @@ struct ContentView: View {
             }
             .padding(.leading, nil)
             
-            if readyWriteDescription {
+            if (readyWriteDescription || !firstDisplay) {
                 Text("This portfolio contains VFX projects which includes demo videos and VFX breakdowns.")
                     .font(.body)
                     .foregroundColor(.white)
-                    .opacity(descriptionWriting ? 1 : 0)
+                    .opacity((descriptionWriting || !firstDisplay) ? 1 : 0)
                 .onAppear {
                     if firstDisplay {
                         withAnimation(.easeOut(duration: 2)) {
@@ -93,7 +102,7 @@ struct ContentView: View {
             
             Spacer().frame(height: 50)
             
-            if displayExploreButton {
+            if displayExploreButton || !firstDisplay {
                 ProgressView(value: 4, total: 16)
                     .padding(.leading, nil)
                     .padding(.trailing, nil)
@@ -122,19 +131,19 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text("Disclaimer")
+                Text("Offering")
                     .padding(.leading, nil)
                     .font(.title)
                     .fontWeight(.bold)
                 
-                Text("The VFX projects examples in this portfolio are entirely outsourced. The contents of the portfolio are not the primary goal of the CA, it's the UI that counts intead.")
+                Text("Each VFX project in this portfolio contains detailed explanation and provides users the ability to 'like' a project, much like how users like a video on Youtube. We also have a push notification feature that will automatically navigate users into the app. In terms of security, we only allow users that can pass the Face ID check for each VFX project.")
                     .padding(.leading, nil)
                     .padding(.trailing, nil)
                     .font(.body)
                 
                 Spacer()
                 
-                Text("By Dennis Willie - D00225835")
+                Text("By Dennis Willie & Jeremy Neo")
                     .padding(.leading, nil)
                     .font(.caption)
             }

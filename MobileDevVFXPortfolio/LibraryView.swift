@@ -2,7 +2,7 @@
 //  LibraryView.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie on 29/03/2023.
+//  Created by Dennis Willie and Jeremy Neo
 //
 
 import SwiftUI
@@ -19,7 +19,11 @@ struct LibraryView: View {
     // Body animation
     @State private var readyRenderBody = false
     @State private var firstDisplay = true
-    @State private var displayDetailedScreen = false
+    
+    public enum FullScreenCoverType {
+        case none, detailed, comment
+    }
+    @State private var fullScreenCoverType: FullScreenCoverType = FullScreenCoverType.none
     
     @StateObject public var vfxViewController: VFXViewController
     
@@ -79,28 +83,54 @@ struct LibraryView: View {
             Spacer()
         
             VStack {
-                Text(vfxViewController.projects[chosenId - 1].title)
-                    .bold()
-                    .font(.title3)
-                    .padding(.top, nil)
-                    .padding(.leading, nil)
-                    .foregroundColor(.black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
+                HStack{
+                    Text(vfxViewController.projects[chosenId - 1].title)
+                        .bold()
+                        .font(.title3)
+                        .padding(.top, nil)
+                        .padding(.leading, nil)
+                        .foregroundColor(.black)
+                    Spacer()
+                }
                 ZStack {
                     Button(action: {
-                        displayDetailedScreen = true
+                        if vfxViewController.projects[chosenId - 1].locked {
+                            vfxViewController.authenticateWithFaceID(id: chosenId, view: false){success in
+                                if success {
+                                    fullScreenCoverType = FullScreenCoverType.detailed
+                                }
+                            }
+                        } else {
+                            fullScreenCoverType = FullScreenCoverType.detailed
+                        }
                     }) {
                         Image(vfxViewController.projects[chosenId - 1].imageName)
                             .resizable()
                             .frame(height: 210)
                     }
-                    .fullScreenCover(isPresented: $displayDetailedScreen) {
-                        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen, project: vfxViewController.projects[chosenId - 1], vfxViewController: vfxViewController)
+                    .fullScreenCover(isPresented: Binding<Bool>(
+                        get: { fullScreenCoverType != FullScreenCoverType.none },
+                        set: { newValue in
+                            // Handle changes to the fullScreenCoverType property if needed
+                        }
+                    )) {
+                        if (fullScreenCoverType == FullScreenCoverType.detailed) {
+                            DetailedProjectView(fullScreenCoverType: $fullScreenCoverType, project: vfxViewController.projects[chosenId - 1], vfxViewController: vfxViewController)
+                        } else if (fullScreenCoverType == FullScreenCoverType.comment) {
+                            CommentsView(projectId: chosenId , vfxViewController: vfxViewController, fullScreenCoverType: $fullScreenCoverType)
+                        }
                     }
                     
                     Button(action: {
-                        displayDetailedScreen = true
+                        if vfxViewController.projects[chosenId - 1].locked {
+                            vfxViewController.authenticateWithFaceID(id: chosenId, view: false){success in
+                                if success {
+                                    fullScreenCoverType = FullScreenCoverType.detailed
+                                }
+                            }
+                        } else {
+                            fullScreenCoverType = FullScreenCoverType.detailed
+                        }
                     }) {
                         Image(systemName: "play.circle.fill")
                             .resizable()
@@ -116,11 +146,18 @@ struct LibraryView: View {
                             .frame(width: 40, height: 40)
                     }
                 }
+                
                 HStack {
                     Text(vfxViewController.projects[chosenId - 1].descriptionHeading)
                         .foregroundColor(.black)
                         .bold()
                     Spacer()
+                    Button(action: {
+                        fullScreenCoverType = FullScreenCoverType.comment
+                    }) {
+                        Image(systemName: "message")
+                            .foregroundColor(.black)
+                    }
                     Button(action: {
                         vfxViewController.toggleLike(id: chosenId)
                     }) {
@@ -130,13 +167,6 @@ struct LibraryView: View {
                 }
                 .padding()
             }
-//            .background(
-//                LinearGradient(
-//                    gradient: Gradient(colors: [Color("theme_color_1_2"),Color("theme_color_1_3"), Color("theme_color_1_4"), Color("theme_color_1_6")]),
-//                    startPoint: .topLeading,
-//                    endPoint: .bottomTrailing
-//                )
-//            )
             .cornerRadius(20)
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
@@ -166,6 +196,9 @@ struct LibraryView: View {
 struct LibraryView_Previews: PreviewProvider {
     static var vfxViewController = VFXViewController()
     static var previews: some View {
-        LibraryView(vfxViewController: vfxViewController)
+        NavigationView {
+            LibraryView(vfxViewController: vfxViewController)
+        }
+        .accentColor(.black)
     }
 }

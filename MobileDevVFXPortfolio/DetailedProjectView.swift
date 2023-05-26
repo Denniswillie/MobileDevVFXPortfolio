@@ -2,7 +2,7 @@
 //  DetailedProjectView.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie on 29/03/2023.
+//  Created by Dennis Willie and Jeremy Neo
 //
 
 import SwiftUI
@@ -26,7 +26,7 @@ struct DetailedProjectView: View {
     
     @State private var brightnessLevel = 0.0
     
-    @Binding public var displayDetailedScreen: Bool
+    @Binding public var fullScreenCoverType: LibraryView.FullScreenCoverType
     public var project: VFXProject
     @StateObject public var vfxViewController: VFXViewController
     
@@ -114,7 +114,7 @@ struct DetailedProjectView: View {
                     // Check if the drag direction is downwards
                     if value.translation.height > 0 {
                         // Dismiss the full screen cover
-                        displayDetailedScreen = false
+                        fullScreenCoverType = LibraryView.FullScreenCoverType.none
                     }
                 }
         )
@@ -122,9 +122,9 @@ struct DetailedProjectView: View {
 }
 
 struct DetailedProjectView_Previews: PreviewProvider {
-    @State static var displayDetailedScreen = true
+    @State static var fullScreenCoverType = LibraryView.FullScreenCoverType.detailed
     static var vfxViewController = VFXViewController()
     static var previews: some View {
-        DetailedProjectView(displayDetailedScreen: $displayDetailedScreen, project: vfxViewController.projects[0], vfxViewController: vfxViewController)
+        DetailedProjectView(fullScreenCoverType: $fullScreenCoverType, project: vfxViewController.projects[0], vfxViewController: vfxViewController)
     }
 }
