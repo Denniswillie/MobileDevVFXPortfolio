@@ -2,8 +2,6 @@
 //  MobileDevVFXPortfolioApp.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie and Jeremy Neo
-//
 
 import SwiftUI
 import UserNotifications
@@ -15,8 +13,8 @@ struct MobileDevVFXPortfolioApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                ContentView(firstDisplay: true)
-            }.accentColor(.black)
+                ContentView()
+            }.accentColor(Color(#colorLiteral(red: Float(234) / 255, green: Float(82) / 255, blue: Float(35) / 255, alpha: 1)))
         }
     }
 }

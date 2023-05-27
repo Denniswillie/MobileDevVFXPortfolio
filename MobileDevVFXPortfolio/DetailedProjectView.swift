@@ -2,8 +2,6 @@
 //  DetailedProjectView.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie and Jeremy Neo
-//
 
 import SwiftUI
 import AVKit
@@ -34,14 +32,48 @@ struct DetailedProjectView: View {
     let cursorColor = Color(.white)
     
     let textColor = Color(.gray)
+    let slightGray = Color(#colorLiteral(red: Float(226) / 255, green: Float(232) / 255, blue: Float(236) / 255, alpha: 1))
 //    @State var player = AVPlayer(url: URL(string: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny")!)
         
     @State var player = AVPlayer(url: Bundle.main.url(forResource: "video1", withExtension: "mp4")!)
+    let playerViewController = AVPlayerViewController()
     
     var body: some View {
-        VStack {
+        VStack (alignment: .leading) {
+            Button(action: {
+                fullScreenCoverType = LibraryView.FullScreenCoverType.none
+            }) {
+                Image(systemName: "chevron.backward.circle.fill")
+                    .resizable()
+                    .foregroundColor(slightGray)
+                    .frame(width: 40, height: 40)
+            }
+            .background(.black)
+            .cornerRadius(25)
+            .padding(.leading, 20)
+            
+            Text(project.title)
+                .font(.title)
+                .bold()
+                .foregroundColor(.black)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .padding(.top, 10)
+                .padding(.leading, 20)
+                .padding(.bottom, 1)
+            
+            Text(project.descriptionHeading)
+                .font(.body)
+                .foregroundColor(.black)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .padding(.leading, 20)
+            
             VideoPlayer(player: player)
-//                .aspectRatio(400 / 300, contentMode: .fit)
                 .frame(height: 250,
                        alignment: .center)
                 .brightness(brightnessLevel)
@@ -49,50 +81,69 @@ struct DetailedProjectView: View {
                     let item = AVPlayerItem(url: project.videoUrl)
                     player.replaceCurrentItem(with: item)
                     player.play()
-//                  if player.currentItem == nil {
-//                        let item = AVPlayerItem(url: )
-//                        player.replaceCurrentItem(with: item)
-//                    }
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-//                        player.play()
-//                    })
                 }
+                .cornerRadius(30)
+                .padding(20)
             
-            HStack {
-                Text(project.title)
+            VStack {
+                HStack {
+                    Text("Description")
+                        .bold()
+                        .font(.title2)
+                        .foregroundColor(.white)
+                    Spacer()
+                    Button(action: {
+                        fullScreenCoverType = LibraryView.FullScreenCoverType.comment
+                    }) {
+                        Image(systemName: "message.fill")
+                            .resizable()
+                            .foregroundColor(Color(#colorLiteral(red: Float(18) / 255, green: Float(19) / 255, blue: Float(26) / 255, alpha: 1)))
+                            .frame(width: 20, height: 20)
+                            .padding(10)
+                    }
+                    .background(.white)
+                    .cornerRadius(25)
+                    Button(action: {
+                        vfxViewController.toggleLike(id: project.id)
+                    }) {
+                        Image(systemName: vfxViewController.projects[project.id - 1].liked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                            .resizable()
+                            .foregroundColor(Color(#colorLiteral(red: Float(18) / 255, green: Float(19) / 255, blue: Float(26) / 255, alpha: 1)))
+                            .frame(width: 20, height: 20)
+                            .padding(10)
+                    }
+                    .background(.white)
+                    .cornerRadius(25)
+                }
+                .padding(.leading, 20)
+                .padding(.trailing, 20)
+                .padding(.top, 20)
+                
+                Text(project.description)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 20)
+                    .padding(.trailing, 20)
+                    .foregroundColor(.white)
+                
+                Text("Adjust Brightness")
                     .font(.title3)
                     .bold()
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer()
-                Button(action: {
-                    vfxViewController.toggleLike(id: project.id)
-                }) {
-                    Image(systemName: vfxViewController.projects[project.id - 1].liked ? "hand.thumbsup.fill" : "hand.thumbsup")
-                        .foregroundColor(.white)
-                        .padding(.trailing, nil)
-                }
+                    .padding(.leading, nil)
+                    .padding(.top, nil)
+                
+                Slider(value: $brightnessLevel, in: 0...1)
+                    .padding(.leading, nil)
+                    .padding(.trailing, nil)
+                    .tint(Color(#colorLiteral(red: Float(34) / 255, green: Float(38) / 255, blue: Float(55) / 255, alpha: 1)))
+                    .padding(.bottom, 20)
             }
-            .padding()
+            .background(Color(#colorLiteral(red: Float(234) / 255, green: Float(82) / 255, blue: Float(35) / 255, alpha: 1)))
+            .cornerRadius(20)
+            .padding(.leading, 20)
+            .padding(.trailing, 20)
             
-            Text(project.description)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, nil)
-                .padding(.trailing, nil)
-                .foregroundColor(.white)
-            
-            Text("Adjust Brightness")
-                .font(.title3)
-                .bold()
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, nil)
-                .padding(.top, nil)
-            
-            Slider(value: $brightnessLevel, in: 0...1)
-                .padding(.leading, nil)
-                .padding(.trailing, nil)
-                .tint(.green)
         }
         .frame(
             minWidth: 0,
@@ -100,13 +151,6 @@ struct DetailedProjectView: View {
             minHeight: 0,
             maxHeight: .infinity,
             alignment: .topLeading
-        )
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [Color("theme_color_1_1"), Color("theme_color_1_2"), Color("theme_color_1_3"), Color("theme_color_1_4")]),
-                startPoint: .topTrailing,
-                endPoint: .bottomLeading
-            )
         )
         .gesture(
             DragGesture()
@@ -118,6 +162,13 @@ struct DetailedProjectView: View {
                     }
                 }
         )
+        .background(
+                    LinearGradient(
+                        gradient: Gradient(colors: [.gray, slightGray, slightGray, slightGray, slightGray, slightGray, slightGray, slightGray,  .white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                    )
+                )
     }
 }
 

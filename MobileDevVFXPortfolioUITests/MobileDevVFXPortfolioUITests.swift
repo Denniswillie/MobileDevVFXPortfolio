@@ -2,8 +2,6 @@
 //  MobileDevVFXPortfolioUITests.swift
 //  MobileDevVFXPortfolioUITests
 //
-//  Created by Dennis Willie on 29/03/2023.
-//
 
 import XCTest
 

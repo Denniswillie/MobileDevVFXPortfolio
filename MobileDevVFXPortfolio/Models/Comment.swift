@@ -2,8 +2,6 @@
 //  Comment.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie on 25/05/2023.
-//
 
 import Foundation
 

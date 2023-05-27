@@ -2,8 +2,6 @@
 //  VFXViewController.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie and Jeremy Neo
-//
 
 import Foundation
 import LocalAuthentication
@@ -46,5 +44,12 @@ class VFXViewController: ObservableObject {
     
     func addComment(projectId: Int, text: String) {
         comments.append(Comment(vfxProjectId: projectId, text: text))
+    }
+    
+    func removeComment(id: UUID) {
+        let newComments = comments.filter { (comment) -> Bool in
+            return comment.id != id
+        }
+        comments = newComments
     }
 }

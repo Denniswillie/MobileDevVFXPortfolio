@@ -2,15 +2,13 @@
 //  CommentsView.swift
 //  MobileDevVFXPortfolio
 //
-//  Created by Dennis Willie on 25/05/2023.
-//
 
 import SwiftUI
 
 struct CommentsView: View {
     @State public var projectId: Int
     @StateObject public var vfxViewController: VFXViewController
-    @State private var text: String = ""
+    @State private var text: String = "Enter comment"
     @Environment(\.presentationMode) var presentationMode
     @Binding public var fullScreenCoverType: LibraryView.FullScreenCoverType
     
@@ -20,26 +18,31 @@ struct CommentsView: View {
                 Rectangle()
                     .frame(width: 50, height: 3)
                     .cornerRadius(10)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color(#colorLiteral(red: Float(234) / 255, green: Float(82) / 255, blue: Float(35) / 255, alpha: 1)))
                 Text(vfxViewController.projects[projectId - 1].title)
-                    .font(.title3)
+                    .font(.title)
                     .padding()
+                    .foregroundColor(Color(#colorLiteral(red: Float(234) / 255, green: Float(82) / 255, blue: Float(35) / 255, alpha: 1)))
+                    .bold()
                 List(vfxViewController.comments.filter { (comment) -> Bool in
                     return comment.vfxProjectId == projectId
                 }, id: \.id) { comment in
-                    CommentView(comment: comment)
-                        .listRowBackground(LinearGradient(
-                            gradient: Gradient(colors: [Color("theme_color_1_1"), Color("theme_color_1_2"), Color("theme_color_1_3")]),
-                            startPoint: .topTrailing,
-                            endPoint: .bottomLeading
-                        ))
+                    CommentView(comment: comment, vfxViewController: vfxViewController)
+                        .listRowBackground(Color(#colorLiteral(red: Float(234) / 255, green: Float(82) / 255, blue: Float(35) / 255, alpha: 1)))
                 }
+                .cornerRadius(0)
                 TextField("Enter comment", text: $text)
                     .padding()
+                    .onTapGesture {
+                        if text == "Enter comment" {
+                            text = ""
+                        }
+                    }
                     .onSubmit {
                         vfxViewController.addComment(projectId: projectId, text: text)
-                        text = ""
+                        text = "Enter comment"
                     }
+                    .foregroundColor(.white)
             }
         }
         .padding(.top, 20) // Add padding to the top
@@ -53,14 +56,7 @@ struct CommentsView: View {
                     }
                 }
         )
-//        .gesture(
-//                    DragGesture()
-//                        .onEnded { value in
-//                            if value.translation.height > 100 {
-//                                presentationMode.wrappedValue.dismiss()
-//                            }
-//                        }
-//                )
+        .background(Color(#colorLiteral(red: Float(18) / 255, green: Float(19) / 255, blue: Float(26) / 255, alpha: 1)))
     }
 }
 
