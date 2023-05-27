@@ -36,6 +36,30 @@ class VFXViewController: ObservableObject {
             completion(false)
         }
     }
+    
+    func authenticateWithFaceIDForComment(completion: @escaping (Bool) -> Void) {
+        let context = LAContext()
+        var error: NSError?
+        
+        // Check if the device supports biometric authentication (Face ID or Touch ID)
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            let reason = "Authenticate to access the content"
+
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+                DispatchQueue.main.async {
+                    if success {
+                        completion(true)
+                    } else {
+                        print("failed")
+                        completion(false)
+                    }
+                }
+            }
+        } else {
+            print("Biometric authentication not available or not configured on the device")
+            completion(false)
+        }
+    }
 
     
     func toggleLike(id: Int) {

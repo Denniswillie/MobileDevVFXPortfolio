@@ -16,7 +16,11 @@ struct CommentView: View {
                 Text(comment.text).font(.body)
                 Spacer()
                 Button(action: {
-                    vfxViewController.removeComment(id: comment.id)
+                    vfxViewController.authenticateWithFaceIDForComment(){success in
+                        if success {
+                            vfxViewController.removeComment(id: comment.id)
+                        }
+                    }
                 }) {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()

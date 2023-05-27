@@ -39,8 +39,12 @@ struct CommentsView: View {
                         }
                     }
                     .onSubmit {
-                        vfxViewController.addComment(projectId: projectId, text: text)
-                        text = "Enter comment"
+                        vfxViewController.authenticateWithFaceIDForComment(){success in
+                            if success {
+                                vfxViewController.addComment(projectId: projectId, text: text)
+                                text = "Enter comment"
+                            }
+                        }
                     }
                     .foregroundColor(.white)
             }
